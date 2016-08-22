@@ -9,6 +9,9 @@ import path from 'path';
 
 export default function(app) {
   // Insert routes below
+  app.use('/api/keywords', require('./api/keyword'));
+  app.use('/api/hashtags', require('./api/hashtag'));
+  app.use('/api/tweets', require('./api/tweet'));
   app.use('/api/things', require('./api/thing'));
   app.use('/api/users', require('./api/user'));
 

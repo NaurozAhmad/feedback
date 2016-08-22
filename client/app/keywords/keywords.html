@@ -1,0 +1,27 @@
+<div class="container">
+	<div class="row">
+		<ng-tag-module style="margin: 0 auto;" cloud-width="800" cloud-height="300" cloud-data="vm.keywords"></ng-tag-module>
+	</div>
+	<div class="row" style="margin-top: 20px;">
+		<div class="col-lg-6 col-md-offset-3">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Keywords</th>
+						<th>Relevance</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="keyword in vm.keywords">
+						<td>
+							{{keyword.text}}
+						</td>
+						<td>
+							{{keyword.relevance}}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
