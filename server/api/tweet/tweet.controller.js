@@ -109,7 +109,7 @@ export function index(req, res) {
 				else {
 					alchemy_language.sentiment(parameters, function(sentiError, sentiResponse) {
 						if (sentiError)
-							console.log('error:', sentiError);
+							console.log('SENTIMENT PROCESSING ERROR:', sentiError);
 						else {
 							console.log(sentiResponse);
 							console.log(emoResponse);
