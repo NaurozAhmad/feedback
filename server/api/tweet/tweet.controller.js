@@ -95,7 +95,7 @@ export function index(req, res) {
 				console.log('Now tracking #' + hashtags[i].name);
 			}
 		});
-	stream.on('tweet', function(tweet) {
+	/*stream.on('tweet', function(tweet) {
 		console.log('tweet received', tweet.text);
 		var parameters = {
 			text: tweet.text
@@ -105,11 +105,11 @@ export function index(req, res) {
 		if (tweet.lang === 'en') {
 			alchemy_language.emotion(parameters, function(emoError, emoResponse) {
 				if (emoError)
-					console.log('error:', emoError);
+					console.log('EMOTION PROCESSING ERROR:', emoError);
 				else {
 					alchemy_language.sentiment(parameters, function(sentiError, sentiResponse) {
 						if (sentiError)
-							console.log('error:', sentiError);
+							console.log('SENTIMENT PROCESSING ERROR:', sentiError);
 						else {
 							console.log(sentiResponse);
 							console.log(emoResponse);
@@ -135,7 +135,7 @@ export function index(req, res) {
 
 	stream.on('error', function(err) {
 		console.log('Oh no', err);
-	})
+	})*/
 
 	return Tweet.find().exec()
 		.then(respondWithResult(res))

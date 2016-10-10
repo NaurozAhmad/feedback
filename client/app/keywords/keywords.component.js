@@ -18,6 +18,9 @@ export class KeywordsComponent {
 		this.$http.get('/api/keywords')
 			.then(response => {
 				this.keywords = response.data;
+        for (var i = 0; i < this.keywords.length; i++) {
+          this.keywords[i].link = '/keyword-detail/' + this.keywords[i].text;
+        }
 				console.log(response.data);
 				this.socket.syncUpdates('keyword', this.keywords);
 			});

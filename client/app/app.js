@@ -29,6 +29,7 @@ import util from '../components/util/util.module';
 import socket from '../components/socket/socket.service';
 import hashtags from './hashtags/hashtags.component';
 import keywords from './keywords/keywords.component';
+import keywordDetail from './keywords/keywordDetail/keywordDetail.component';
 import ngTagModule from './ngTagModule/ngTagModule.directive';
 
 import './app.scss';
@@ -39,7 +40,7 @@ angular.module('feedbackApp', [
 		// ngMessages,
 
 		// ngValidationMatch,
-		_Auth, account, admin, navbar, footer, main, hashtags, keywords, ngTagModule, constants, socket, util
+		_Auth, account, admin, navbar, footer, main, hashtags, keywords, ngTagModule, constants, socket, util, keywordDetail
 	])
 	.config(routeConfig)
 	.run(function($rootScope, $location, Auth) {
