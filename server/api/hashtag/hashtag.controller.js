@@ -12,6 +12,8 @@
 
 import jsonpatch from 'fast-json-patch';
 import Hashtag from './hashtag.model';
+// import TweetCtrl from '../tweet/tweet.controller';
+var TweetCtrl = require('../tweet/tweet.controller');
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -40,6 +42,7 @@ function removeEntity(res) {
     if (entity) {
       return entity.remove()
         .then(() => {
+          TweetCtrl.initiateStream();
           res.status(204).end();
         });
     }
@@ -70,6 +73,14 @@ export function index(req, res) {
     .catch(handleError(res));
 }
 
+export function byUser(req, res) {
+  return Hashtag.find({
+    userId: req.params.userId
+  }).exec()
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+}
+
 // Gets a single Hashtag from the DB
 export function show(req, res) {
   return Hashtag.findById(req.params.id).exec()
@@ -81,7 +92,12 @@ export function show(req, res) {
 // Creates a new Hashtag in the DB
 export function create(req, res) {
   return Hashtag.create(req.body)
-    .then(respondWithResult(res, 201))
+    .then(function(response) {
+      console.log('CREATED');
+      console.log('CONTROLLER', TweetCtrl);
+      TweetCtrl.initiateStream();
+      return res.status(201).send(response);
+    })
     .catch(handleError(res));
 }
 

@@ -25,6 +25,10 @@ for(var e in events) {
 
 function emitEvent(event) {
   return function(doc) {
+    for (var i = 0; i < doc.entities.hashtags.length; i++) {
+      var msg = event + ':' + doc.hashtags[i];
+      TweetEvents.emit(msg, doc);
+    }
     TweetEvents.emit(event + ':' + doc._id, doc);
     TweetEvents.emit(event, doc);
   };

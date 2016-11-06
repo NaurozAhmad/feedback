@@ -39,7 +39,7 @@ Thing.find({}).remove()
     });
   });
 
-User.find({}).remove()
+/*User.find({}).remove()
   .then(() => {
     User.create({
         provider: 'local',
@@ -56,4 +56,4 @@ User.find({}).remove()
       .then(() => {
         console.log('finished populating users');
       });
-  });
+  });*/

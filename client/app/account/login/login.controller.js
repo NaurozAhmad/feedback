@@ -3,8 +3,9 @@
 export default class LoginController {
 
   /*@ngInject*/
-  constructor(Auth, $state) {
+  constructor(Auth, $state, $http) {
     this.Auth = Auth;
+    this.$http = $http;
     this.$state = $state;
   }
 
@@ -12,13 +13,19 @@ export default class LoginController {
     this.submitted = true;
 
     if (form.$valid) {
+      var that = this;
       this.Auth.login({
           email: this.user.email,
           password: this.user.password
         })
         .then(() => {
           // Logged in, redirect to home
-          this.$state.go('main');
+          that.Auth.getCurrentUser(function(user) {
+            if (user) {
+              that.$http.get('/api/tweets/start/' + user._id);
+              that.$state.go('main');
+            }
+          });
         })
         .catch(err => {
           this.errors.login = err.message;

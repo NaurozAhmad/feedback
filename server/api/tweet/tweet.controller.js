@@ -32,14 +32,18 @@ var rest = new TwitterREST({
   access_token_secret: 'v6RRBxEzEXbyRWS565wZvlahRDq16ialZEEeh95in73ib'
 });
 
-function initiateStream() {
+export function initiateStream() {
   console.log('INITIATING STREAM');
+  var toTrack = [];
   Hashtag.find().exec()
     .then(function(hashtags) {
-      console.log(hashtags);
+      // console.log(hashtags);
       for (var i = 0; i < hashtags.length; i++) {
-        stream.track('#' + hashtags[i].name);
-        console.log('Now tracking #' + hashtags[i].name);
+        if (toTrack.indexOf(hashtags[i].name) === -1) {
+          stream.track('#' + hashtags[i].name);
+          console.log('Now tracking #' + hashtags[i].name);
+          toTrack.push(hashtags[i].name);
+        }
       }
     });
   stream.on('tweet', function(tweet) {
@@ -53,11 +57,20 @@ function initiateStream() {
       Tweet.findOne({ text: tweet.text, 'user.id': tweet.user.id }, function(err, model) {
         if (!err && (!model || model === null)) {
           console.log('CREATING NEW');
-          Tweet.create(tweet, (err, data) => {
-            if (!err) {
-              console.log('tweet created');
+          var rawTags = tweet.entities.hashtags;
+          var hashtags = [];
+          for (var i = 0; i < rawTags.length; i++) {
+            hashtags.push(rawTags[i].text);
+            if (i === rawTags.length - 1) {
+              tweet.hashtags = hashtags;
+              // console.log('CLEANED HASHTAGS', tweet.hashtags);
+              Tweet.create(tweet, (err, data) => {
+                if (!err) {
+                  console.log('tweet created');
+                }
+              });
             }
-          });
+          }
         }
       });
     }
@@ -132,7 +145,31 @@ export function index(req, res) {
     .catch(handleError(res));
 }
 
-export function search(req, res) {
+export function byUser(req, res) {
+  var userId = req.params.userId;
+  return Hashtag.find({
+    userId: userId
+  }).select('name -_id').exec().then(function(hashtags) {
+    var hash = [];
+    for (var i = 0; i < hashtags.length; i++) {
+      hash.push(hashtags[i].name);
+      if (i === hashtags.length - 1) {
+        return Tweet.find({
+          'hashtags': {
+            $in: hash
+          }
+        }).exec()
+          .then(function (tweets) {
+            return res.status(200).send(tweets);
+          })
+          .catch(handleError(res));
+      }
+    }
+  });
+
+}
+
+/*export function search(req, res) {
   console.log('SEARCH INITIATED');
   Hashtag.findOne().exec()
     .then(function(hashtag) {
@@ -155,9 +192,9 @@ export function search(req, res) {
         }
       })
     });
-}
+}*/
 
-export function getEmotions(req, res) {
+/*export function getEmotions(req, res) {
   function callback() {
     console.log('finished');
   }
@@ -169,7 +206,7 @@ export function getEmotions(req, res) {
           text: tweet.text
         };
         console.log('SENTIMENT ', sentiment(tweet.text));
-        /*Tweet.update({
+        Tweet.update({
           _id: tweet._id
         }, {
           'sentiment.mixed': sentiResponse.docSentiment.mixed,
@@ -187,7 +224,7 @@ export function getEmotions(req, res) {
             console.log('numAffected', numAffected);
             callback(null, saveError);
           }
-        })*/
+        })
         /*alchemy_language.emotion(parameters, function(emoError, emoResponse) {
           console.log(emoResponse);
           if (emoError)
@@ -206,7 +243,7 @@ export function getEmotions(req, res) {
               }
             });
           }
-        });*/
+        });
       })
     }, function(error) {
       if (error) {
@@ -214,7 +251,7 @@ export function getEmotions(req, res) {
       }
     });
   res.status(200).send('Done');
-}
+}*/
 
 export function getSentiment(req, res) {
   Tweet.find().exec()

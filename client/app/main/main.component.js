@@ -5,10 +5,11 @@ import routing from './main.routes';
 export class MainController {
 
   /*@ngInject*/
-  constructor($http, $scope, socket) {
+  constructor($http, $scope, socket, Auth) {
     this.$http = $http;
     this.socket = socket;
     this.sentiment = 0;
+    this.Auth = Auth;
     this.startDate = {
       opened: false
     };
@@ -26,14 +27,23 @@ export class MainController {
   }
 
   $onInit() {
-    $('.ui.radio.checkbox').checkbox();
-    this.$http.get('/api/tweets')
-      .then(response => {
-        this.tweets = response.data;
-        this.tweetsToShow = JSON.parse(JSON.stringify(this.tweets));
-        console.log(this.tweetsToShow);
-        this.socket.syncUpdates('tweet', this.tweets);
-      });
+    var that = this;
+    that.Auth.getCurrentUser(user => {
+      that.user = user;
+      that.$http.get('/api/tweets/by-user/' + user._id)
+        .then(response => {
+          that.tweets = response.data;
+          that.tweetsToShow = JSON.parse(JSON.stringify(that.tweets));
+          console.log(that.tweetsToShow);
+          that.$http.get('/api/hashtags/by-user/' + user._id)
+            .then(hashtags => {
+              that.hashtags = hashtags.data;
+              for (var i = 0; i < that.hashtags.length; i++) {
+                that.socket.syncTweets('tweet', that.tweets, null, this.hashtags[i].name);
+              }
+            })
+        });
+    });
   }
 
   openStartDate() {

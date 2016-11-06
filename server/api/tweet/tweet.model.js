@@ -29,6 +29,7 @@ var TweetSchema = new mongoose.Schema({
   entities: {
     hashtags: []
   },
+  hashtags: [],
   lang: String,
   sentiment: {
     score: Number,
