@@ -25,3 +25,28 @@
 .navbar-text {
   margin-left: 15px;
 }
+
+.sentiment {
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-left: 4px solid #677167;
+  background-color: #ebefec;
+}
+
+.sentiment.negative {
+  border-left: 4px solid red;
+  background-color: #fbd6d6;
+}
+
+.sentiment.positive {
+  border-left: 4px solid #2dbb38;
+  background-color: #d6fbd9;
+}
+
+.ui.form .inline.fields .field {
+  font-size: 1.4rem;
+}
+
+.ui.checkbox input.hidden+label {
+  font-size: 1.3rem;
+}

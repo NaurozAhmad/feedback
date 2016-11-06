@@ -1,61 +1,42 @@
 <div class="container">
-	<div class="row">
-		<div class="col-lg-5">
-			<h3 class="page-header">Fetch data from Twitter</h3>
-			<!-- <div class="row" style="margin-top: 20px;">
-				<button class="btn btn-primary btn-block" ng-click="main.search()">Search for a hashtag</button>
-			</div>
-			<div class="row" style="margin-top: 20px;">
-				<button class="btn btn-primary btn-block" ng-click="main.getEmotions()">Get Emotions</button>
-			</div>
-			<div class="row" style="margin-top: 20px;">
-				<button class="btn btn-primary btn-block" ng-click="main.getSentiment()">Get Sentiment</button>
-			</div> -->
-			<div class="row" style="margin-top: 20px;">
-				<button class="btn btn-primary btn-block" ng-click="main.getKeywords()">Get Keywords</button>
-			</div>
-			<!-- <div class="row" style="margin-top: 20px;">
-				<div class="col-md-6">
-					<p class="input-group">
-						<input type="text" class="form-control" uib-datepicker-popup="dd.MM.yyyy" ng-model="main.query.startDate" is-open="main.startDate.opened" close-text="Close" />
-						<span class="input-group-btn">
-							<button type="button" class="btn btn-default" ng-click="main.openStartDate()"><i class="glyphicon glyphicon-calendar"></i></button>
-						</span>
-					</p>
-				</div>
-				<div class="col-md-6">
-					<p class="input-group">
-						<input type="text" class="form-control" uib-datepicker-popup="dd.MM.yyyy" ng-model="main.query.endDate" is-open="main.endDate.opened" close-text="Close" />
-						<span class="input-group-btn">
-							<button type="button" class="btn btn-default" ng-click="main.openEndDate()"><i class="glyphicon glyphicon-calendar"></i></button>
-						</span>
-					</p>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-6 col-md-offset-3">
-					<button class="btn btn-primary btn-block">Fetch</button>
-				</div>
-			</div> -->
-		</div>
-		<div class="col-lg-7">
-			<h3 class="page-header">Twitter Stream <span style="float: right;">{{main.tweets.length}}</span></h3>
-			<div style="overflow-y: scroll; max-height: 400px;">
-				<div class="list-group">
-					<div class="list-group-item" ng-repeat="tweet in main.tweets | orderBy: -created_at">
-						<h4 class="list-group-item-heading">{{tweet.user.screen_name}}</h4>
-						<p class="list-group-item-text">{{tweet.text}}</p>
-						<p>
-							<span ng-show="tweet.sentiment.sentiType">Sentiment: {{tweet.sentiment.sentiType}}</span>
-							<span ng-show="tweet.sentiment.sentiScore" style="padding-left: 30px;">Polarity: {{tweet.sentiment.sentiScore}}</span>
-							<span>{{tweet.created_at}} {{tweet.user.id}}</span>
-						</p>
-						<p>
-							Anger: {{tweet.emotions.anger*100 | number:2}}%, Joy: {{tweet.emotions.joy*100 | number:2}}%, Disgust: {{tweet.emotions.disgust*100 | number:2}}%, Sadness: {{tweet.emotions.sadness*100 | number:2}}%, Fear: {{tweet.emotions.fear*100 | number:2}}%
-						</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div class="row">
+    <div class="col-lg-12">
+      <h3 class="page-header">Twitter Stream <span style="float: right;">{{main.tweets.length}}</span></h3>
+      <div class="ui form" style="margin-bottom: 26px;">
+        <div class="inline fields">
+          <div class="field" style="width: 50%">
+          	<div class="ui icon input" style="width: 100%">
+          	  <input type="search" placeholder="Filter..." ng-model="main.toSearch">
+          	  <i class="search icon"></i>
+          	</div>
+          </div>
+	        <div class="field">
+	          <button class="ui button large" ng-click="main.showSentiment(0)" ng-class="{'primary': main.sentiment === 0}">All</button>
+	        </div>
+	        <div class="field">
+	          <button class="ui button large" ng-click="main.showSentiment(1)" ng-class="{'primary': main.sentiment === 1}">Positive</button>
+	        </div>
+	        <div class="field">
+	          <button class="ui button large" ng-click="main.showSentiment(2)" ng-class="{'primary': main.sentiment === 2}">Negative</button>
+	        </div>
+        </div>
+      </div>
+      <div style="overflow-y: scroll; max-height: 400px;">
+        <div class="list-group">
+          <div class="list-group-item" ng-repeat="tweet in main.tweetsToShow | orderBy:['-date'] | filter: main.toSearch">
+            <h4 class="list-group-item-heading">{{tweet.user.screen_name}}</h4>
+            <p class="list-group-item-text">{{tweet.text}}</p>
+            <p>
+              <span ng-show="tweet.sentiment.sentiType">Sentiment: {{tweet.sentiment.sentiType}}</span>
+              <span ng-show="tweet.sentiment.sentiScore" style="padding-left: 30px;">Polarity: {{tweet.sentiment.sentiScore}}</span>
+              <span>{{tweet.date | amDateFormat: 'dddd, MMMM, Do, YYYY, h:mm A'}}</span>
+            </p>
+            <p class="sentiment" ng-class="{'negative': tweet.sentiment.score < 0, 'positive': tweet.sentiment.score > 0}">
+              Sentiment: {{tweet.sentiment.score}}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

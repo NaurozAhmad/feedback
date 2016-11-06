@@ -9,13 +9,14 @@ import 'angular-socket-io';
 
 import uiRouter from 'angular-ui-router';
 import uiBootstrap from 'angular-ui-bootstrap';
+import angularMoment from 'angular-moment';
 
 // import ngMessages from 'angular-messages';
 //import ngValidationMatch from 'angular-validation-match';
 
 
 import {
-	routeConfig
+  routeConfig
 } from './app.config';
 
 import _Auth from '../components/auth/auth.module';
@@ -34,30 +35,31 @@ import ngTagModule from './ngTagModule/ngTagModule.directive';
 import './app.scss';
 
 angular.module('feedbackApp', [
-		// ngAnimate,
-		ngCookies, ngResource, ngSanitize, 'btford.socket-io', uiRouter, uiBootstrap,
-		// ngMessages,
+    // ngAnimate,
+    ngCookies, ngResource, ngSanitize, 'btford.socket-io', uiRouter, uiBootstrap,
+    angularMoment,
 
-		// ngValidationMatch,
-		_Auth, account, admin, navbar, footer, main, hashtags, keywords, ngTagModule, constants, socket, util
-	])
-	.config(routeConfig)
-	.run(function($rootScope, $location, Auth) {
-		'ngInject';
-		// Redirect to login if route requires auth and you're not logged in
+    // ngValidationMatch,
+    _Auth, account, admin, navbar, footer, main, hashtags, keywords, ngTagModule, constants,
+    socket, util
+  ])
+  .config(routeConfig)
+  .run(function($rootScope, $location, Auth) {
+    'ngInject';
+    // Redirect to login if route requires auth and you're not logged in
 
-		$rootScope.$on('$stateChangeStart', function(event, next) {
-			Auth.isLoggedIn(function(loggedIn) {
-				if (next.authenticate && !loggedIn) {
-					$location.path('/login');
-				}
-			});
-		});
-	});
+    $rootScope.$on('$stateChangeStart', function(event, next) {
+      Auth.isLoggedIn(function(loggedIn) {
+        if (next.authenticate && !loggedIn) {
+          $location.path('/login');
+        }
+      });
+    });
+  });
 
 angular.element(document)
-	.ready(() => {
-		angular.bootstrap(document, ['feedbackApp'], {
-			strictDi: true
-		});
-	});
+  .ready(() => {
+    angular.bootstrap(document, ['feedbackApp'], {
+      strictDi: true
+    });
+  });

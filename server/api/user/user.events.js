@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {EventEmitter} from 'events';
+import { EventEmitter } from 'events';
 import User from './user.model';
 var UserEvents = new EventEmitter();
 

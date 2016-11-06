@@ -30,6 +30,13 @@ export class HashtagsComponent {
 				this.newHashtag = '';
 			});
 	}
+
+	removeHashtag(id) {
+		this.$http.delete('/api/hashtags/' + id)
+			.then(response => {
+				console.log(response.data);
+			});
+	}
 }
 
 export default angular.module('feedbackApp.hashtags', [uiRouter])

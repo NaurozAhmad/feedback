@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {EventEmitter} from 'events';
+import { EventEmitter } from 'events';
 import Thing from './thing.model';
 var ThingEvents = new EventEmitter();
 
@@ -18,7 +18,7 @@ var events = {
 };
 
 // Register the event emitter to the model events
-for(var e in events) {
+for (var e in events) {
   let event = events[e];
   Thing.schema.post(e, emitEvent(event));
 }
