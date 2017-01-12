@@ -10,6 +10,8 @@ router.get('/', controller.index);
 router.get('/by-user/:userId', controller.byUser);
 // router.get('/getEmotions', controller.getEmotions);
 router.get('/getSentiment', controller.getSentiment);
+router.get('/stop-stream', controller.stopStream);
+router.get('/start-stream', controller.initiateStream);
 router.get('/:id', controller.show);
 router.post('/', controller.create);
 router.put('/:id', controller.upsert);

@@ -33,8 +33,7 @@ var TweetSchema = new mongoose.Schema({
   lang: String,
   sentiment: {
     score: Number,
-    positive: [String],
-    negative: [String]
+    probability: Number,
   }
 });
 

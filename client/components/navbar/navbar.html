@@ -19,6 +19,12 @@
 				</li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a ng-click="$ctrl.stopStream()">Stop Stream</a>
+				</li>
+				<li>
+					<a ng-click="$ctrl.startStream()">Start Stream</a>
+				</li>
 				<li ui-sref-active="active">
 					<a ui-sref="keywords">Keywords</a>
 				</li>
@@ -31,7 +37,7 @@
 				<li ng-hide="$ctrl.isLoggedIn()" ui-sref-active="active">
 					<a ui-sref="login">Login</a>
 				</li>
-				<li ng-show="$ctrl.isLoggedIn()">
+				<li ng-show="$ctrl.isLoggedIn()" style="padding: 16px 0;">
 					<p class="navbar-text">Hello {{ $ctrl.getCurrentUser().name }}</p>
 				</li>
 				<li ng-show="$ctrl.isLoggedIn()" ui-sref-active="active">

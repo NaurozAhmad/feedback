@@ -1,0 +1,36 @@
+<section>
+  <h3 class="page-header">Client Stream <span style="float: right;">{{main.feedbacks.length}}</span></h3>
+  <div class="ui form" style="margin-bottom: 26px;">
+    <div class="inline fields">
+      <div class="field" style="width: 50%">
+        <div class="ui icon input" style="width: 100%">
+          <input type="search" placeholder="Filter..." ng-model="main.toSearch">
+          <i class="search icon"></i>
+        </div>
+      </div>
+      <div class="field">
+        <button class="ui button large" ng-click="main.showSentiment(0)" ng-class="{'primary': main.sentiment === 0}">All</button>
+      </div>
+      <div class="field">
+        <button class="ui button large" ng-click="main.showSentiment(1)" ng-class="{'primary': main.sentiment === 1}">Positive</button>
+      </div>
+      <div class="field">
+        <button class="ui button large" ng-click="main.showSentiment(2)" ng-class="{'primary': main.sentiment === 2}">Negative</button>
+      </div>
+    </div>
+  </div>
+  <div style="overflow-y: scroll; max-height: 400px;">
+    <div class="list-group">
+      <div class="list-group-item" ng-repeat="feedback in main.feedbacksToShow | orderBy:['-date'] | filter: main.toSearch">
+        <h4 class="list-group-item-heading">{{feedback.user}}</h4>
+        <p class="list-group-item-text">{{feedback.text}}</p>
+        <p>
+          <span>{{feedback.submitted | amDateFormat: 'dddd, MMMM, Do, YYYY, h:mm A'}}</span>
+        </p>
+        <p class="sentiment" ng-class="{'negative': feedback.sentiment.score < 0, 'positive': feedback.sentiment.score > 0}">
+          Sentiment: {{feedback.sentiment.score}}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

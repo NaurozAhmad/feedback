@@ -1,42 +1,19 @@
 <div class="container">
   <div class="row">
     <div class="col-lg-12">
-      <h3 class="page-header">Twitter Stream <span style="float: right;">{{main.tweets.length}}</span></h3>
-      <div class="ui form" style="margin-bottom: 26px;">
+      <p style="font-weight: bold;">App ID: <code style="font-size: 14px;">{{main.user._id}}</code> (Share this App ID to users so that they may send feedback to your dashboard.)</p>
+      <div class="ui form">
         <div class="inline fields">
-          <div class="field" style="width: 50%">
-          	<div class="ui icon input" style="width: 100%">
-          	  <input type="search" placeholder="Filter..." ng-model="main.toSearch">
-          	  <i class="search icon"></i>
-          	</div>
+          <div class="field">
+            <button class="ui button large" ng-click="main.changeSource('twitter')" ng-class="{'primary': main.source === 'twitter'}">Source Twitter</button>
           </div>
-	        <div class="field">
-	          <button class="ui button large" ng-click="main.showSentiment(0)" ng-class="{'primary': main.sentiment === 0}">All</button>
-	        </div>
-	        <div class="field">
-	          <button class="ui button large" ng-click="main.showSentiment(1)" ng-class="{'primary': main.sentiment === 1}">Positive</button>
-	        </div>
-	        <div class="field">
-	          <button class="ui button large" ng-click="main.showSentiment(2)" ng-class="{'primary': main.sentiment === 2}">Negative</button>
-	        </div>
-        </div>
-      </div>
-      <div style="overflow-y: scroll; max-height: 400px;">
-        <div class="list-group">
-          <div class="list-group-item" ng-repeat="tweet in main.tweetsToShow | orderBy:['-date'] | filter: main.toSearch">
-            <h4 class="list-group-item-heading">{{tweet.user.screen_name}}</h4>
-            <p class="list-group-item-text">{{tweet.text}}</p>
-            <p>
-              <span ng-show="tweet.sentiment.sentiType">Sentiment: {{tweet.sentiment.sentiType}}</span>
-              <span ng-show="tweet.sentiment.sentiScore" style="padding-left: 30px;">Polarity: {{tweet.sentiment.sentiScore}}</span>
-              <span>{{tweet.date | amDateFormat: 'dddd, MMMM, Do, YYYY, h:mm A'}}</span>
-            </p>
-            <p class="sentiment" ng-class="{'negative': tweet.sentiment.score < 0, 'positive': tweet.sentiment.score > 0}">
-              Sentiment: {{tweet.sentiment.score}}
-            </p>
+          <div class="field">
+            <button class="ui button large" ng-click="main.changeSource('client')" ng-class="{'primary': main.source === 'client'}">Source Client App</button>
           </div>
         </div>
       </div>
+      <div ng-show="main.source === 'twitter'" ng-include="'/app/main/twitter.partial.html'"></div>
+      <div ng-show="main.source === 'client'" ng-include="'/app/main/client.partial.html'"></div>
     </div>
   </div>
 </div>

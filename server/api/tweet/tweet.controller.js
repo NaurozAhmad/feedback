@@ -15,6 +15,7 @@ import Tweet from './tweet.model';
 import Hashtag from '../hashtag/hashtag.model';
 import async from 'async';
 import sentiment from 'sentiment';
+import request from 'request';
 
 // var watson = require('watson-developer-cloud');
 var TwitterREST = require('twitter');
@@ -35,44 +36,67 @@ var rest = new TwitterREST({
 export function initiateStream() {
   console.log('INITIATING STREAM');
   var toTrack = [];
+  // var toTrack = stream.tracking();
+  stream.untrackAll();
+  console.log('TRACKING', stream.tracking());
   Hashtag.find().exec()
     .then(function(hashtags) {
       // console.log(hashtags);
       for (var i = 0; i < hashtags.length; i++) {
         if (toTrack.indexOf(hashtags[i].name) === -1) {
           stream.track('#' + hashtags[i].name);
-          console.log('Now tracking #' + hashtags[i].name);
+          // console.log('Now tracking #' + hashtags[i].name);
           toTrack.push(hashtags[i].name);
+        }
+        if (i === hashtags.length - 1) {
+          console.log('TRACKING', stream.tracking());
         }
       }
     });
   stream.on('tweet', function(tweet) {
     tweet.sentiment = {};
     if (tweet.lang === 'en') {
-      var calculated = sentiment(tweet.text);
-      tweet.sentiment.score = calculated.score;
-      tweet.sentiment.positive = calculated.positive;
-      tweet.sentiment.negative = calculated.negative;
-      tweet.date = new Date();
-      Tweet.findOne({ text: tweet.text, 'user.id': tweet.user.id }, function(err, model) {
-        if (!err && (!model || model === null)) {
-          console.log('CREATING NEW');
-          var rawTags = tweet.entities.hashtags;
-          var hashtags = [];
-          for (var i = 0; i < rawTags.length; i++) {
-            hashtags.push(rawTags[i].text);
-            if (i === rawTags.length - 1) {
-              tweet.hashtags = hashtags;
-              // console.log('CLEANED HASHTAGS', tweet.hashtags);
-              Tweet.create(tweet, (err, data) => {
-                if (!err) {
-                  console.log('tweet created');
-                }
-              });
-            }
-          }
+      console.log('SENDING TEXT:', tweet.text);
+      var toSend = tweet.text.replace(/…/g);
+      toSend = toSend.replace(/[^a-zA-Z\. ]/g, '');
+      var options = {
+        uri: 'http://139.162.163.37:5000/analyze',
+        method: 'POST',
+        json: {
+          'text': toSend
         }
-      });
+      };
+      request(options, function(err,
+        response, body) {
+        if (err) {
+          console.log('ERROR', err);
+        } else {
+          console.log('BODY', body);
+          tweet.sentiment.score = parseInt(body.score);
+          tweet.sentiment.probability = parseInt(body.probability);
+          tweet.date = new Date();
+          Tweet.findOne({ text: tweet.text, 'user.id': tweet.user.id }, function(err, model) {
+            if (!err && (!model || model === null)) {
+              console.log('CREATING NEW');
+              var rawTags = tweet.entities.hashtags;
+              var hashtags = [];
+              for (var i = 0; i < rawTags.length; i++) {
+                hashtags.push(rawTags[i].text);
+                if (i === rawTags.length - 1) {
+                  tweet.hashtags = hashtags;
+                  // console.log('CLEANED HASHTAGS', tweet.hashtags);
+                  Tweet.create(tweet, (err, data) => {
+                    if (!err) {
+                      console.log('tweet created');
+                    }
+                  });
+                }
+              }
+            }
+          });
+          
+        }
+      })
     }
   });
 
@@ -155,11 +179,11 @@ export function byUser(req, res) {
       hash.push(hashtags[i].name);
       if (i === hashtags.length - 1) {
         return Tweet.find({
-          'hashtags': {
-            $in: hash
-          }
-        }).exec()
-          .then(function (tweets) {
+            'hashtags': {
+              $in: hash
+            }
+          }).exec()
+          .then(function(tweets) {
             return res.status(200).send(tweets);
           })
           .catch(handleError(res));
@@ -167,6 +191,22 @@ export function byUser(req, res) {
     }
   });
 
+}
+
+export function stopStream(req, res) {
+  var toTrack = [];
+  console.log('UNTRACKING ALL');
+  stream.untrackAll();
+  /*Hashtag.find().exec()
+    .then(function(hashtags) {
+      // console.log(hashtags);
+      for (var i = 0; i < hashtags.length; i++) {
+        if (toTrack.indexOf(hashtags[i].name) === -1) {
+          console.log('UNTRACK #' + hashtags[i].name);
+          toTrack.push(hashtags[i].name);
+        }
+      }
+    });*/
 }
 
 /*export function search(req, res) {

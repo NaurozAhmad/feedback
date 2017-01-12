@@ -9,6 +9,7 @@ import path from 'path';
 
 export default function(app) {
   // Insert routes below
+  app.use('/api/feedbacks', require('./api/feedback'));
   app.use('/api/keywords', require('./api/keyword'));
   app.use('/api/hashtags', require('./api/hashtag'));
   app.use('/api/tweets', require('./api/tweet'));

@@ -9,6 +9,7 @@ import mongoose from 'mongoose';
 mongoose.Promise = require('bluebird');
 import config from './config/environment';
 import http from 'http';
+import cors from 'cors';
 
 // Connect to MongoDB
 mongoose.connect(config.mongo.uri, config.mongo.options);
@@ -22,6 +23,7 @@ if (config.seedDB) { require('./config/seed'); }
 
 // Setup server
 var app = express();
+app.use(cors());
 var server = http.createServer(app);
 var socketio = require('socket.io')(server, {
   serveClient: config.env !== 'production',
