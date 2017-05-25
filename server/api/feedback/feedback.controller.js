@@ -14,6 +14,7 @@ import jsonpatch from 'fast-json-patch';
 import Feedback from './feedback.model';
 import Hashtag from '../hashtag/hashtag.model';
 import sentiment from 'sentiment';
+import request from 'request';
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -118,6 +119,7 @@ export function create(req, res) {
       return res.status(500).send(err);
     } else {
       console.log('BODY', body);
+      feedback.sentiment = {};
       feedback.sentiment.score = parseInt(body.score);
       feedback.sentiment.probability = parseInt(body.probability);
       feedback.submitted = new Date();
